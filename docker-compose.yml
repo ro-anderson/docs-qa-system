@@ -1,0 +1,56 @@
+networks:
+  docs-qa-network:
+    name: docs-qa-network
+
+services:
+  qdrant:
+    image: qdrant/qdrant
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - ./qdrant_storage:/qdrant/storage
+    networks:
+      - docs-qa-network
+
+  batch_embedder:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: batch_embedder
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+      - ./data:/app/data
+    networks:
+      - docs-qa-network
+    depends_on:
+      - qdrant
+    environment:
+      - PYTHONPATH=/app/batch_embedder/app
+      - QDRANT_URL=http://qdrant:6333
+      - DATA_PATH=/app/data
+
+  # Debug service for batch_embedder
+  batch_embedder-bash:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: batch_embedder
+    command: /bin/bash
+    stdin_open: true
+    tty: true
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+      - ./data:/app/data
+    networks:
+      - docs-qa-network
+    depends_on:
+      - qdrant
+    environment:
+      - PYTHONPATH=/app/batch_embedder/app
+      - QDRANT_URL=http://qdrant:6333
+      - DATA_PATH=/app/data

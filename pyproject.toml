@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "docs-qa-system"
+version = "0.1.0"
+description = "Document Q&A System with Vector Database"
+authors = ["Your Name <your.email@example.com>"]
+readme = "README.md"
+package-mode = false
+packages = [{include = "batch_embedder/app"}]
+
+[tool.poetry.dependencies]
+python = ">=3.11,<3.13"
+python-dotenv = "^1.0.1"
+qdrant-client = "^1.11.3"
+langchain = "^0.2.12"
+langchain-text-splitters = "^0.2.0"
+openai = "^1.0.0"
+pathlib = "^1.0.1"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.4"
+pytest-asyncio = "^0.25.0"
+pytest-cov = "^6.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
