@@ -18,10 +18,10 @@ This system addresses the common challenge organizations face when employees, ma
 ### Measurable Outcomes
 - **Reduced Response Time**: From hours/days of manual document searching to seconds of AI-powered answers
 - **Improved Accuracy**: Source-referenced responses eliminate guesswork and ensure policy compliance
-- **Increased Self-Service**: 80%+ reduction in routine HR and IT support tickets
+- **Increased Self-Service**: Reduction in routine HR and IT support tickets
 - **Enhanced Productivity**: Managers spend less time on information lookup, more time on strategic tasks
 - **Better Compliance**: Consistent, accurate interpretation of labor laws and company policies
-- **Knowledge Accessibility**: 24/7 availability of institutional knowledge without human intervention
+- **Knowledge Accessibility**: More availability of institutional knowledge without human intervention
 - **Cost Reduction**: Decreased dependency on specialized staff for routine information requests
 
 ## System Architecture
