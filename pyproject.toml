@@ -15,6 +15,10 @@ langchain = "^0.2.12"
 langchain-text-splitters = "^0.2.0"
 openai = "^1.0.0"
 pathlib = "^1.0.1"
+rich = "^14.0.0"
+agno = "^1.5.9"
+cohere = "^5.15.0"
+infinity-client = "^0.0.76"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.4"

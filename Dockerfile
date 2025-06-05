@@ -38,3 +38,12 @@ ENV PYTHONPATH="/app/batch_embedder/app"
 
 # Set the command to run the batch_embedder
 CMD ["python", "batch_embedder/app/main.py"]
+
+# chat_cli image
+FROM base AS chat_cli
+
+# Set the environment variable for the chat_cli
+ENV PYTHONPATH="/app/chat_cli/app"
+
+# Set the command to run the chat_cli
+CMD ["python", "chat_cli/app/main.py"]

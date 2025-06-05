@@ -5,7 +5,7 @@ load_dotenv()
 
 class Config:
     # OpenAI Configuration
-    OPENAI_API_KEY: str = environ.get("OPENAI_API_KEY_2", "")
+    OPENAI_API_KEY: str = environ.get("OPENAI_API_KEY", "")
     EMBEDDING_MODEL: str = environ.get("EMBEDDING_MODEL", "text-embedding-3-small")
     
     # Qdrant Configuration

@@ -54,3 +54,43 @@ services:
       - PYTHONPATH=/app/batch_embedder/app
       - QDRANT_URL=http://qdrant:6333
       - DATA_PATH=/app/data
+
+  chat_cli:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: chat_cli
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    networks:
+      - docs-qa-network
+    depends_on:
+      - qdrant
+    environment:
+      - PYTHONPATH=/app/chat_cli/app
+      - QDRANT_URL=http://qdrant:6333
+    stdin_open: true
+    tty: true
+
+  # Debug service for chat_cli
+  chat_cli-bash:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: chat_cli
+    command: /bin/bash
+    stdin_open: true
+    tty: true
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    networks:
+      - docs-qa-network
+    depends_on:
+      - qdrant
+    environment:
+      - PYTHONPATH=/app/chat_cli/app
+      - QDRANT_URL=http://qdrant:6333

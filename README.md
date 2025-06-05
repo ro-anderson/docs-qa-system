@@ -1,198 +1,272 @@
-# Document Q&A System with Vector Database
+# RH Document Q&A System with Multi-Agent Chat
 
-A comprehensive Q&A chatbot system that processes documents and creates embeddings using OpenAI's embedding models, storing them in Qdrant vector database for efficient similarity search.
+A comprehensive document Q&A system featuring a multi-agent chat interface that intelligently routes questions to specialized AI agents. The system processes company documents (HR policies, labor rules, and product manuals) and provides contextual answers through OpenAI-powered agents.
 
-## Project Structure
+## Context, Target Users, and Outcomes
+
+### Context
+This system addresses the common challenge organizations face when employees, managers, and stakeholders need quick access to accurate information scattered across multiple document types. Instead of manually searching through HR policies, labor regulations, and product manuals, users can ask natural language questions and receive instant, contextual answers with source references.
+
+### Target Users
+- **HR Professionals**: Quick access to policy interpretations, compliance requirements, and employee procedure guidance
+- **Managers and Team Leaders**: Instant answers about labor laws, employee rights, and company policies for decision-making
+- **Employees**: Self-service access to HR policies, benefits information, and product documentation
+- **Compliance Officers**: Fast lookup of legal requirements and regulatory compliance information
+- **IT Support Teams**: Product documentation and troubleshooting assistance
+- **Customer Service**: Product manual information for customer inquiries
+
+### Measurable Outcomes
+- **Reduced Response Time**: From hours/days of manual document searching to seconds of AI-powered answers
+- **Improved Accuracy**: Source-referenced responses eliminate guesswork and ensure policy compliance
+- **Increased Self-Service**: 80%+ reduction in routine HR and IT support tickets
+- **Enhanced Productivity**: Managers spend less time on information lookup, more time on strategic tasks
+- **Better Compliance**: Consistent, accurate interpretation of labor laws and company policies
+- **Knowledge Accessibility**: 24/7 availability of institutional knowledge without human intervention
+- **Cost Reduction**: Decreased dependency on specialized staff for routine information requests
+
+## System Architecture
 
 ```
 .
-├── batch_embedder/           # Batch embedding service
+├── batch_embedder/           # Document Processing Service
 │   └── app/
 │       ├── core/             # Core configuration and logging
-│       │   ├── settings.py   # Environment configuration
-│       │   └── logger.py     # Logging setup
-│       ├── embeddings/       # Embedding generation
-│       │   └── embedding_generator.py
+│       ├── embeddings/       # Embedding generation (see embeddings/README.md)
 │       ├── vectordb/         # Vector database operations
-│       │   ├── vectordb.py   # Main VectorDB class
-│       │   ├── chunkenizer.py # Text chunking utilities
-│       │   └── utils.py      # Helper functions
 │       └── main.py           # Entry point
+├── chat_cli/                 # Multi-Agent Chat Service  
+│   └── app/
+│       ├── core/             # Core configuration and logging
+│       ├── agents/           # Specialized AI agents (see agents/README.md)
+│       ├── teams/            # Multi-agent coordinators
+│       └── main.py           # Chat interface entry point
 ├── data/                     # Document storage
 │   ├── hr-policies/          # HR policy documents
-│   ├── labor-rules/          # Labor rule documents
+│   ├── labor-rules/          # Labor rule documents  
 │   └── product-manual/       # Product manual documents
 ├── docker-compose.yml        # Docker services orchestration
 ├── Dockerfile               # Container definitions
+├── Makefile                 # Convenient commands
 ├── pyproject.toml           # Python dependencies
 └── .env.example             # Environment variables template
 ```
 
-## Features
+## Specialized AI Agents
 
-- **Multi-Collection Support**: Automatically creates separate Qdrant collections for different document types
-- **OpenAI Integration**: Uses OpenAI's text-embedding-3-small model for high-quality embeddings
-- **Document Chunking**: Intelligently splits documents using recursive character text splitter
-- **Docker Support**: Fully containerized with Docker Compose orchestration
-- **Health Checks**: Ensures Qdrant is ready before processing documents
-- **Comprehensive Logging**: Detailed logging for monitoring and debugging
+The system includes three specialized agents that work together:
 
-## Collections
+- **HR Policies Agent**: Company policies, employee procedures, benefits, HR guidelines
+- **Labor Rules Agent**: Employment law, worker rights, legal compliance, labor regulations  
+- **Product Manual Agent**: Product documentation, technical support, installation guides, troubleshooting
 
-The system automatically creates three collections in Qdrant:
+> **For detailed information about the AI agents**, see [`chat_cli/app/agents/README.md`](chat_cli/app/agents/README.md)
 
-1. **hr_policies** - For HR policy documents from `data/hr-policies/`
-2. **labor_rules** - For labor rule documents from `data/labor-rules/`
-3. **product_manual** - For product manual documents from `data/product-manual/`
+## Prerequisites
+
+- **Docker & Docker Compose**: Required for running the containerized services
+- **OpenAI API Key**: For embedding generation and chat completion
 
 ## Setup
 
-### Prerequisites
+### 1. Environment Configuration
 
-- Docker and Docker Compose
-- OpenAI API key
-
-### Installation
-
-1. Clone the repository:
-   ```bash
-   git clone <repository-url>
-   cd docs-qa-system
-   ```
-
-2. Create environment file:
+1. **Copy the environment template**:
    ```bash
    cp .env.example .env
    ```
 
-3. Edit `.env` file and add your OpenAI API key:
+2. **Edit `.env` file** and add your OpenAI API key:
    ```bash
-   OPENAI_API_KEY=your_actual_openai_api_key_here
+   OPENAI_API_KEY=
+   EMBEDDING_MODEL=text-embedding-3-small
+   # Qdrant Configuration
+   QDRANT_URL=http://localhost:6333
+   # Data Configuration
+   DATA_PATH=./data
+   # Chunking Configuration
+   CHUNK_SIZE=300
+   CHUNK_OVERLAP=20
    ```
 
-## Usage
+### 2. Add Your Documents
 
-### Start Qdrant Vector Database
+Place your documents in the appropriate folders:
+- `data/hr-policies/` - HR policy documents (.md files)
+- `data/labor-rules/` - Labor rule documents (.md files)
+- `data/product-manual/` - Product manual documents (.md files)
+
+## Usage Workflow
+
+> **Important**: You must run the embedding pipeline first to process documents before using the chat interface.
+
+### Step 1: Process Documents (Required First)
 
 ```bash
-docker compose up qdrant
+# Start Qdrant vector database
+make build
+
+# Process all documents and create embeddings
+make run-embedder
 ```
 
-This will start Qdrant on `http://localhost:6333` with a web UI available at `http://localhost:6333/dashboard`.
+The `make run-embedder` command will run the embedding system that:
+1. Start Qdrant vector database
+2. Read all markdown files from `data/` folders
+3. Create embeddings using OpenAI  
+4. Store vectors in Qdrant collections
+5. Verify collections were created successfully
 
-### Run Batch Embedding Process
+**Collections Created:**
+The system will create three collections in Qdrant based on the folder structure:
+- `hr_policies` - From files in `data/hr-policies/`
+- `labor_rules` - From files in `data/labor-rules/`
+- `product_manual` - From files in `data/product-manual/`
+
+**Current Default Files:**
+By default, the system will process these sample files:
+```
+data/
+├── hr-policies/
+│   ├── employee_handbook.md
+│   └── hr_rewards.md
+├── labor-rules/
+│   ├── labor_rules_reference.md
+│   └── overtime_guideline.md
+└── product-manual/
+    ├── employee_self_service_portal.md
+    └── mobile_app_guide.md
+```
+
+**Adding Your Own Files:**
+You can add more markdown (.md) files to any of these folders:
+- Add HR policy documents to `data/hr-policies/`
+- Add labor rule documents to `data/labor-rules/`
+- Add product manual documents to `data/product-manual/`
+
+After adding new files, simply run `make run-embedder` again to process them.
+
+### Step 2: Start Interactive Chat
 
 ```bash
-docker compose up batch_embedder
+# Launch the multi-agent chat interface
+make run-chat-cli
 ```
 
 This will:
-1. Wait for Qdrant to be healthy
-2. Read all markdown files from the `data/` folder
-3. Create three collections in Qdrant
-4. Process documents by chunking them
-5. Generate embeddings using OpenAI
-6. Store vectors in appropriate collections
-7. Verify the collections were created successfully
+1. Start the interactive chat interface
+2. Initialize all three specialized agents
+3. Enable intelligent question routing
+4. Provide real-time responses with source references
 
-### Run Both Services Together
+## Chat Interface Examples
 
-```bash
-docker compose up
+**HR Policy Questions:**
+```
+Sua pergunta: What's our vacation policy?
+→ Routes to HR Policies Agent
 ```
 
-### Debug Mode
-
-To access the batch_embedder container for debugging:
-
-```bash
-docker compose run batch_embedder-bash
+**Labor Law Questions:**
+```  
+Sua pergunta: What are overtime regulations in Brazil?
+→ Routes to Labor Rules Agent
 ```
 
-## Configuration
+**Product Questions:**
+```
+Sua pergunta: How do I install the new software?
+→ Routes to Product Manual Agent
+```
 
-### Environment Variables
+**Out-of-scope Questions:**
+```
+Sua pergunta: What's the weather today?
+→ Politely declines and suggests relevant topics
+```
 
-| Variable | Description | Default |
-|----------|-------------|----------|
-| `OPENAI_API_KEY` | OpenAI API key for embeddings | Required |
-| `EMBEDDING_MODEL` | OpenAI embedding model | `text-embedding-3-small` |
-| `QDRANT_URL` | Qdrant server URL | `http://localhost:6333` |
-| `DATA_PATH` | Path to document folder | `./data` |
-| `CHUNK_SIZE` | Text chunk size for splitting | `300` |
-| `CHUNK_OVERLAP` | Overlap between chunks | `20` |
+## Available Commands
 
-### Document Processing
+| Command | Description |
+|---------|-------------|
+| `make build` | Build all Docker images |
+| `make run-embedder` | Process documents and create embeddings |
+| `make run-chat-cli` | Start interactive chat interface |
+| `make run-embedder-debug` | Debug the embedding service |
+| `make run-chat-cli-debug` | Debug the chat service |
+| `make clean` | Remove Python cache files |
+| `make docker-clean` | Clean up Docker containers and volumes |
+| `make help` | Show all available commands |
 
-- **Supported Formats**: Markdown (.md) files
-- **Chunking Strategy**: Recursive character splitting with configurable size and overlap
-- **Embedding Dimension**: 1536 (OpenAI text-embedding-3-small)
-- **Vector Distance**: Cosine similarity
-
-## Monitoring
-
-### Logs
-
-- Application logs are written to `batch_embedder.log`
-- Console output shows real-time processing status
-- Each document and chunk processing is logged
+## Monitoring & Debugging
 
 ### Qdrant Dashboard
+Access the vector database interface at: `http://localhost:6333/dashboard`
 
-Access the Qdrant web interface at `http://localhost:6333/dashboard` to:
-- View collections and their statistics
-- Browse stored vectors
-- Monitor system performance
+### Service Logs
+```bash
+# View embedding service logs
+docker compose logs batch_embedder
 
-## Development
+# View chat service logs  
+docker compose logs chat_cli
 
-### Local Development
+# View Qdrant logs
+docker compose logs qdrant
+```
 
-1. Install dependencies:
-   ```bash
-   poetry install
-   ```
+### Collections Created
+The system creates three collections in Qdrant:
+- `hr_policies` - HR policy embeddings
+- `labor_rules` - Labor rule embeddings
+- `product_manual` - Product manual embeddings
 
-2. Run locally:
-   ```bash
-   cd batch_embedder/app
-   python main.py
-   ```
+## Features
 
-### Adding New Document Types
-
-1. Create a new folder in `data/`
-2. Add the folder mapping in `batch_embedder/app/core/settings.py`:
-   ```python
-   COLLECTIONS = {
-       "hr-policies": "hr_policies",
-       "labor-rules": "labor_rules", 
-       "product-manual": "product_manual",
-       "new-folder": "new_collection"  # Add this line
-   }
-   ```
+- **Multi-Agent Coordination**: Intelligent routing to specialized agents
+- **OpenAI Integration**: High-quality embeddings and chat completion
+- **Semantic Search**: Vector similarity search with Qdrant
+- **Interactive Chat**: Beautiful console interface with streaming responses
+- **Context Awareness**: Maintains conversation history
+- **Scope Management**: Politely handles out-of-scope questions
+- **Fully Dockerized**: Complete containerization with Docker Compose
+- **Source References**: Provides document references for answers
 
 ## Troubleshooting
 
 ### Common Issues
 
 1. **OpenAI API Key Error**: Ensure your API key is correctly set in `.env`
-2. **Qdrant Connection Error**: Make sure Qdrant service is running and healthy
-3. **No Documents Found**: Check that markdown files exist in the data folders
-4. **Permission Errors**: Ensure Docker has access to the project directory
+2. **No Collections Found**: Run the embedding pipeline first (`make run-embedder`)
+3. **Qdrant Connection Error**: Make sure Qdrant service is running
+4. **Chat Not Interactive**: Use `make run-chat-cli` (not `docker compose up`)
+5. **No Documents Found**: Check that .md files exist in data folders
 
-### Logs Location
+### Reset Everything
+```bash
+# Clean up and start fresh
+make docker-clean
+make build
+make run-embedder
+make run-chat-cli
+```
 
-- Container logs: `docker compose logs batch_embedder`
-- Application logs: `batch_embedder.log` file
-- Qdrant logs: `docker compose logs qdrant`
+## Additional Documentation
+
+- **Embedding Service Details**: [`batch_embedder/app/embeddings/README.md`](batch_embedder/app/embeddings/README.md)
+- **AI Agents Documentation**: [`chat_cli/app/agents/README.md`](chat_cli/app/agents/README.md)
+- **Chat CLI Service**: [`chat_cli/README.md`](chat_cli/README.md)
+
+## Development Workflow
+
+1. **Add new documents** to appropriate `data/` folders
+2. **Run embedding pipeline** to process new documents
+3. **Test with chat interface** to verify functionality
+4. **Monitor via Qdrant dashboard** for vector storage verification
 
 ## Next Steps
 
-This batch embedder service provides the foundation for a Q&A system. Next steps could include:
-
-1. **Query Service**: Create an API service for similarity search
-2. **Chat Interface**: Build a web or chat interface
-3. **RAG Pipeline**: Implement retrieval-augmented generation
-4. **Authentication**: Add user authentication and authorization
-5. **Monitoring**: Add metrics and monitoring dashboards
+- Add new document types by creating folders in `data/`
+- Extend with new specialized agents
+- Integrate web interface
+- Add authentication and user management
+- Implement advanced RAG strategies

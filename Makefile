@@ -1,4 +1,4 @@
-.PHONY: build run-embedder run-embedder-debug clean docker-clean help
+.PHONY: build run-embedder run-embedder-debug run-chat-cli run-chat-cli-debug clean docker-clean help
 
 SHELL=/bin/bash
 
@@ -21,6 +21,14 @@ run-embedder: build
 run-embedder-debug: build
 	$(DOCKER_COMPOSE) run --rm batch_embedder-bash
 
+## Build (if needed) and run the chat CLI in Docker (interactive)
+run-chat-cli: build
+	$(DOCKER_COMPOSE) run --rm chat_cli
+
+## Build (if needed) and run the chat CLI in debug mode (bash shell)
+run-chat-cli-debug: build
+	$(DOCKER_COMPOSE) run --rm chat_cli-bash
+
 ## Remove Python cache files
 clean:
 	find . -name "__pycache__" -type d -exec rm -r {} \+
@@ -35,6 +43,8 @@ help:
 	@echo "  make build              - Build the Docker images"
 	@echo "  make run-embedder       - Build (if needed) and run the batch embedder in Docker"
 	@echo "  make run-embedder-debug - Build (if needed) and run the batch embedder in debug mode"
+	@echo "  make run-chat-cli        - Build (if needed) and run the chat CLI in Docker (interactive)"
+	@echo "  make run-chat-cli-debug  - Build (if needed) and run the chat CLI in debug mode"
 	@echo "  make clean              - Remove Python cache files"
 	@echo "  make docker-clean       - Remove Docker containers, networks, and volumes"
 	@echo "  make help               - Display this help information"

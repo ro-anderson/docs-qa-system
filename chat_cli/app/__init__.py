@@ -1,0 +1,3 @@
+"""
+Chat CLI Application Package
+""" 
