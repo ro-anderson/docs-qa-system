@@ -1,4 +1,9 @@
-# RH Document Q&A System with Multi-Agent Chat
+# Multi-Agent Q&A System
+
+[ro-anderson](https://github.com/ro-anderson) | [LinkedIn](https://www.linkedin.com/in/ro-anderson/)
+
+![ytb logo](./images/ytb.png)
+[Watch the code walkthroug video demo here](https://youtu.be/Vx55d1PtAPY?si=yjCRi6-_zTkPQAwn)
 
 A comprehensive document Q&A system featuring a multi-agent chat interface that intelligently routes questions to specialized AI agents. The system processes company documents (HR policies, labor rules, and product manuals) and provides contextual answers through OpenAI-powered agents.
 
@@ -173,25 +178,25 @@ This will:
 
 **HR Policy Questions:**
 ```
-Sua pergunta: What's our vacation policy?
+Your question: What's our vacation policy?
 → Routes to HR Policies Agent
 ```
 
 **Labor Law Questions:**
 ```  
-Sua pergunta: What are overtime regulations in Brazil?
+Your question: What are overtime regulations in Brazil?
 → Routes to Labor Rules Agent
 ```
 
 **Product Questions:**
 ```
-Sua pergunta: How do I install the new software?
+Your question: How do I install the new software?
 → Routes to Product Manual Agent
 ```
 
 **Out-of-scope Questions:**
 ```
-Sua pergunta: What's the weather today?
+Your question: What's the weather today?
 → Politely declines and suggests relevant topics
 ```
 

@@ -2,7 +2,7 @@
 
 A dockerized multi-agent chat interface that coordinates between specialized AI agents for company assistance.
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 chat_cli/
@@ -19,7 +19,7 @@ chat_cli/
 │   └── main.py         # Application entry point
 ```
 
-## 🤖 Specialized Agents
+## Specialized Agents
 
 ### HR Policies Agent
 - **Collection**: `hr_policies`
@@ -36,7 +36,7 @@ chat_cli/
 - **Expertise**: Product documentation, technical support, installation guides
 - **Use cases**: Product troubleshooting, installation help, technical specifications
 
-## 🚀 Usage
+## Usage
 
 ### Docker Compose (Recommended)
 
@@ -68,7 +68,7 @@ DEBUG_MODE=false                   # Debug logging
 SHOW_MEMBERS_RESPONSES=true        # Show agent coordination
 ```
 
-## 💬 Chat Interface
+## Chat Interface
 
 The interface provides:
 - **Multi-agent coordination**: Automatically routes questions to appropriate specialists
@@ -81,29 +81,29 @@ The interface provides:
 
 **HR Policy Question:**
 ```
-💬 Sua pergunta: What's our vacation policy?
+💬  Your question: What's our vacation policy?
 → Routes to HR Policies Agent
 ```
 
 **Labor Law Question:**
 ```  
-💬 Sua pergunta: What are overtime regulations in Brazil?
+💬 Your question: What are overtime regulations in Brazil?
 → Routes to Labor Rules Agent
 ```
 
 **Product Question:**
 ```
-💬 Sua pergunta: How do I install the new software?
+💬 Your question: How do I install the new software?
 → Routes to Product Manual Agent
 ```
 
 **Out-of-scope Question:**
 ```
-💬 Sua pergunta: What's the weather today?
+💬 Your question: What's the weather today?
 → Politely declines and suggests relevant topics
 ```
 
-## 🔧 Technical Features
+## Technical Features
 
 - **Agno Team Coordination**: Uses coordinate mode for intelligent routing
 - **OpenAI Embeddings**: High-quality semantic search with text-embedding-ada-002
@@ -112,7 +112,7 @@ The interface provides:
 - **History Management**: Maintains conversation context across interactions
 - **Logging**: Comprehensive logging to `chat_cli.log`
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 **Connection Issues:**
 - Ensure Qdrant is running: `docker compose up qdrant`
@@ -124,7 +124,7 @@ The interface provides:
 - Check embedding model availability
 - Review logs: `docker compose logs chat_cli`
 
-## 📝 Development
+## Development
 
 To extend the system:
 

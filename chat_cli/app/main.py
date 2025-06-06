@@ -41,7 +41,7 @@ def main() -> None:
         # Chat loop
         while True:
             try:
-                question = Prompt.ask("[bold cyan]💬 Sua pergunta")
+                question = Prompt.ask("[bold cyan]💬 Your question")
                 
                 if question.lower() in {"sair", "exit", "quit"}:
                     console.print("\n[dim]Até logo! 👋[/dim]")
@@ -61,7 +61,7 @@ def main() -> None:
             except Exception as e:
                 logger.error(f"Error processing question: {str(e)}")
                 console.print(f"\n[red]❌ Erro: {str(e)}[/red]")
-                console.print("[yellow]⚠️  Tente reformular sua pergunta.[/yellow]")
+                console.print("[yellow]⚠️  Please reformulate your question.[/yellow]")
                 
             console.print("\n" + "─" * 80 + "\n")
             

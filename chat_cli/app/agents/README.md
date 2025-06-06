@@ -191,18 +191,6 @@ Could you rephrase your question to relate to one of these areas?"
 - **Completeness**: Combines multiple document sources
 - **Attribution**: Always includes source references
 
-### Response Time
-- **Query Processing**: ~1-2 seconds for vector search
-- **Generation**: ~3-10 seconds for response generation
-- **Streaming**: Real-time output as content is generated
-- **Coordination**: Additional 1-2 seconds for multi-agent scenarios
-
-### Resource Usage
-- **Memory**: ~100MB per agent (models cached)
-- **API Costs**: ~$0.01-0.05 per complex query
-- **Vector Search**: ~10ms per collection search
-- **Embeddings**: Real-time query embedding generation
-
 ## Configuration
 
 ### Environment Variables
@@ -248,60 +236,6 @@ Agent: [Provides vacation policy details]
 User: "What if I need more time off?"
 Agent: [References previous conversation, suggests additional leave options]
 ```
-
-## Troubleshooting
-
-### Common Issues
-
-1. **No Relevant Documents Found**
-   ```
-   Issue: Agent returns "No relevant information found"
-   Solution: Check if documents exist in correct collections
-   Debug: Verify embeddings were created successfully
-   ```
-
-2. **Poor Response Quality**
-   ```
-   Issue: Generic or inaccurate responses
-   Solution: Improve document quality and chunking strategy
-   Debug: Review document content and embedding quality
-   ```
-
-3. **Agent Routing Issues**
-   ```
-   Issue: Questions go to wrong agent
-   Solution: Refine coordinator instructions
-   Debug: Check question classification logic
-   ```
-
-### Debug Mode
-```bash
-# Access chat service for debugging
-make run-chat-cli-debug
-
-# Inside container
-python -c "from agents.hr_policies_agent import create_hr_policies_agent; agent = create_hr_policies_agent()"
-```
-
-## Best Practices
-
-### Document Preparation
-- **Structure**: Use clear headings and sections
-- **Content**: Include comprehensive information
-- **Format**: Maintain consistent markdown formatting
-- **Updates**: Keep documents current and accurate
-
-### Agent Usage
-- **Specific Questions**: Ask targeted, specific questions
-- **Context**: Provide sufficient context for complex queries
-- **Follow-up**: Use follow-up questions to drill down
-- **Scope**: Keep questions within agent expertise areas
-
-### System Optimization
-- **Collection Size**: Maintain manageable collection sizes
-- **Document Quality**: Ensure high-quality source documents
-- **Regular Updates**: Refresh embeddings when documents change
-- **Monitor Performance**: Track response quality and speed
 
 ## Related Documentation
 
