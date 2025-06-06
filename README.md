@@ -95,9 +95,16 @@ Place your documents in the appropriate folders:
 - `data/labor-rules/` - Labor rule documents (.md files)
 - `data/product-manual/` - Product manual documents (.md files)
 
-## Usage Workflow
+### 3. Explore Vector Database (Optional)
 
-> **Important**: You must run the embedding pipeline first to process documents before using the chat interface.
+You can start the vector database independently to explore the dashboard:
+```bash
+docker compose up qdrant
+```
+
+Access the Qdrant dashboard at: `http://localhost:6333/dashboard`
+
+**Note**: Initially, the dashboard will be empty with no collections. Collections will only appear after running the embedding pipeline in Step 1 of the usage workflow.
 
 ### Step 1: Process Documents (Required First)
 
@@ -115,6 +122,10 @@ The `make run-embedder` command will run the embedding system that:
 3. Create embeddings using OpenAI  
 4. Store vectors in Qdrant collections
 5. Verify collections were created successfully
+
+**Before Processing**: The Qdrant dashboard at `http://localhost:6333/dashboard` will be empty with no collections.
+
+**After Processing**: You'll see three collections created based on your document folders.
 
 **Collections Created:**
 The system will create three collections in Qdrant based on the folder structure:
@@ -202,6 +213,16 @@ Sua pergunta: What's the weather today?
 ### Qdrant Dashboard
 Access the vector database interface at: `http://localhost:6333/dashboard`
 
+**Run Vector Database Only:**
+```bash
+# Start just the vector database service
+docker compose up qdrant
+```
+
+**Dashboard States:**
+- **Before Embeddings**: Empty dashboard with no collections
+- **After Embeddings**: Three collections visible with document vectors
+
 ### Service Logs
 ```bash
 # View embedding service logs
@@ -265,8 +286,48 @@ make run-chat-cli
 
 ## Next Steps
 
+### Document Management
 - Add new document types by creating folders in `data/`
-- Extend with new specialized agents
-- Integrate web interface
-- Add authentication and user management
-- Implement advanced RAG strategies
+- Extend with new specialized agents for different domains
+- Implement document versioning and change detection
+
+### Production API Integration
+- **FastAPI Service**: Create a new `api` service to expose agents via REST endpoints
+- **Session Management**: Add memory and conversation history storage for user sessions
+- **User Authentication**: Implement user management and access control
+- **Session Persistence**: Store and retrieve user conversation history across sessions
+
+### Performance & Monitoring
+- **Observability**: Integrate monitoring solutions like Logfire or LangFuse for:
+  - Agent performance tracking
+  - Response quality metrics
+  - Usage analytics and cost monitoring
+  - Conversation flow analysis
+- **Caching Strategy**: Implement function call caching to reduce API costs and improve response times
+- **Load Balancing**: Add horizontal scaling for high-traffic scenarios
+
+### Advanced Capabilities
+- **Tool Integration**: Expand agent capabilities with external tools:
+  - Database connectors for real-time data queries
+  - Calendar integration for scheduling-related questions
+  - Email systems for notification workflows
+  - External API integrations (weather, stock prices, etc.)
+- **Multi-modal Support**: Add support for PDF, Word documents, and image processing
+- **Advanced RAG**: Implement hybrid search (semantic + keyword), re-ranking, and query expansion
+
+### Quality Assurance & Evaluation
+- **Evaluation Framework**: Create systematic agent evaluation with:
+  - Validation database with question-answer pairs
+  - Automated testing pipeline for response quality
+  - A/B testing for different agent configurations
+  - Performance benchmarking against human baselines
+- **Continuous Improvement**: Implement feedback loops to:
+  - Collect user satisfaction ratings
+  - Identify knowledge gaps and improve documentation
+  - Monitor accuracy and update agent instructions
+
+### Integration & Deployment
+- **Web Interface**: Build modern React/Vue.js frontend for browser access
+- **Mobile Applications**: Native mobile apps for iOS/Android
+- **Enterprise Integrations**: Connect with Slack, Microsoft Teams, or internal chat systems
+- **CI/CD Pipeline**: Automated testing, deployment, and monitoring workflows
