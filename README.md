@@ -5,7 +5,9 @@
 ![ytb logo](./images/ytb.png)
 [Watch the code walkthroug video demo here](https://youtu.be/Vx55d1PtAPY?si=yjCRi6-_zTkPQAwn)
 
-A comprehensive document Q&A system featuring a multi-agent chat interface that intelligently routes questions to specialized AI agents. The system processes company documents (HR policies, labor rules, and product manuals) and provides contextual answers through OpenAI-powered agents.
+### Multi-Agent RAG System QA graph
+![multi agent architecture](./images/multi-agent-rag-qa-arch.png)
+
 
 ## Context, Target Users, and Outcomes
 
