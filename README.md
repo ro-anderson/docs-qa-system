@@ -186,13 +186,13 @@ Your question: What's our vacation policy?
 
 **Labor Law Questions:**
 ```  
-Your question: What are overtime regulations in Brazil?
+Your question: What are or overtime regulations?
 → Routes to Labor Rules Agent
 ```
 
 **Product Questions:**
 ```
-Your question: How do I install the new software?
+What are the exact steps I need to follow the first time I log in to the DigitalBank mobile app?
 → Routes to Product Manual Agent
 ```
 
