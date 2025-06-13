@@ -36,14 +36,16 @@ class AgnoDoc:
 class PatchedQdrant(AgnoQdrant):
     """Override search to preencher `name` e devolver `AgnoDoc`s."""
 
-    def __init__(self, collection: str, default_snippet_name: str = "document_snippet", **kwargs):
+    def __init__(self, collection: str, default_snippet_name: str, **kwargs):
         """Initialize PatchedQdrant with collection-specific default snippet name.
         
         Args:
             collection: The Qdrant collection name
-            default_snippet_name: Default name for snippets when no name is found in metadata
+            default_snippet_name: Default name for snippets when no name is found in metadata (required)
             **kwargs: Additional arguments passed to parent class
         """
+        if not default_snippet_name:
+            raise ValueError("default_snippet_name is required and cannot be empty")
         super().__init__(collection=collection, **kwargs)
         self.default_snippet_name = default_snippet_name
 
@@ -69,8 +71,24 @@ class PatchedQdrant(AgnoQdrant):
         docs: List[AgnoDoc] = []
         for r in results:
             payload: Dict[str, Any] = r.payload or {}
-            text = payload.get("text", "")
-            name = payload.get("name") or (text[:40].strip() or self.default_snippet_name)
+            # Use chunk_text as the main text content
+            text = payload.get("chunk_text") or payload.get("text", "")
+            
+            # Create a meaningful name from filename and chunk_index if available
+            filename = payload.get("filename", "")
+            chunk_index = payload.get("chunk_index")
+            
+            if filename and chunk_index is not None:
+                name = f"{filename}_chunk_{chunk_index}"
+            elif filename:
+                name = filename
+            elif payload.get("name"):
+                name = payload.get("name")
+            elif text:
+                name = text[:40].strip()
+            else:
+                name = self.default_snippet_name
+                
             docs.append(
                 AgnoDoc(
                     id=str(r.id),
